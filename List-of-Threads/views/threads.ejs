@@ -1,0 +1,14 @@
+<% include header %>
+
+<h1> Threads 
+    <a href="/users/listthreads/create" class="btn btn-primary pull-right">+ Create Thread</a>
+    <a href="/users/logout" class="btn btn-primary pull-right">Logout</a>
+</h1>
+<% if (threads.length>0) { %>
+    <% for (var i = 0; i<threads.length; i++) { %>
+        <%= threads[i].title %>
+    <%} %>
+<% } else { %>
+    No record found
+    <% } %>
+<% include footer %>
