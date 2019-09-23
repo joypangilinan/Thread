@@ -1,8 +1,10 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
+var passportLocalMongoose = require('passport-local-mongoose')
 const User = require('./user')
+const Comment = require('./comment')
 
-var ThreadSchema = new mongoose.Schema({
+var ThreadSchema = new Schema({
     title: {
         type: String,
         required: true
@@ -28,5 +30,5 @@ ThreadSchema.virtual('comments', {
     localField: '_id',
     foreignField: 'threadId'
 })
-
+ThreadSchema.plugin(passportLocalMongoose)
 module.exports = mongoose.model('Thread', ThreadSchema)
