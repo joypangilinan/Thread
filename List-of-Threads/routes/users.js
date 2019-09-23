@@ -43,6 +43,7 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
   var token = authenticate.getToken({ _id: req.user._id })
   res.statusCode = 200
   res.setHeader('Authorization', 'bearer ' + token)
+
   // res.json({ success: true, token: token, status: 'You are successfully login' })
   console.log(token)
   res.redirect("/users/listthreads")
