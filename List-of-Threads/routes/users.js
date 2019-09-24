@@ -4,11 +4,12 @@ var bodyParser = require('body-parser')
 var passport = require('passport')
 var authenticate = require('../authenticate')
 
+
 const User = require('../models/user')
 const Thread = require('../models/thread')
 const Comment = require('../models/comment')
 router.use(bodyParser.json())
-
+var token
 /* GET users listing. */
 
 
@@ -40,10 +41,15 @@ router.get('/login', function (req, res, next) {
 });
 
 router.post('/login', passport.authenticate('local'), (req, res) => {
-  var token = authenticate.getToken({ _id: req.user._id })
+
+   token = authenticate.getToken({ _id: req.user._id })
   res.statusCode = 200
+<<<<<<< HEAD
   res.setHeader('Authorization', 'bearer ' + token)
 
+=======
+  res.setHeader('Authorization', 'Bearer ' + token)
+>>>>>>> 1598b22528623f34509743b11048e13f11da9e0d
   // res.json({ success: true, token: token, status: 'You are successfully login' })
   console.log(token)
   res.redirect("/users/listthreads")
@@ -61,6 +67,8 @@ router.get('/listthreads', function (req, res, next) {
 
 
 router.get('/listthreads/create', function (req, res, next) {
+ 
+  res.header('Authorization', 'Bearer ' + token)
   User.find({})
     .then((user) => {
       console.log(user)
