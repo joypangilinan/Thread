@@ -2,7 +2,22 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var passportLocalMongoose = require('passport-local-mongoose')
 const User = require('./user')
-const Comment = require('./comment')
+
+var CommentSchema = new Schema({
+    comment: {
+        type: String,
+        trim: true
+    },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+})
 
 var ThreadSchema = new Schema({
     title: {
@@ -22,13 +37,9 @@ var ThreadSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    comments: [CommentSchema]
 })
 
-ThreadSchema.virtual('comments', {
-    ref: 'Comment',
-    localField: '_id',
-    foreignField: 'threadId'
-})
-ThreadSchema.plugin(passportLocalMongoose)
+
 module.exports = mongoose.model('Thread', ThreadSchema)

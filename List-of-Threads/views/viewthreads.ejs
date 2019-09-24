@@ -1,21 +1,44 @@
 <% include header %>
 
-<h1>A Thread     
-    <a href="/users/listthreads" class="btn btn-primary pull-right">All Threads</a>
+<h1>A Thread
+    <a href="/users/listthreads" class="btn btn-primary">All Threads</a>
 </h1>
 
 <form method="post" role="form">
-    <div class="form-group">
-        <textarea class="form-control" id="title" name="title" placeholder="Your thread here" rows="3" required></textarea>
-        <input type="button" value="Edit" class="btn btn-primary pull-right"/>
-        <input type="button" value="Delete" class="btn btn-primary pull-right"/>
+    <div class="card">
+        <div class="card-header">
+            Featured
+        </div>
+        <div class="card-body">
+            <h1><%= threads.title %></h1>
+            <input type="button" value="Edit" />
+            <input type="button" value="Delete" />
+        </div>
+    </div><br>
+    <h1>Comments</h1>
+    <% if (threads.comments.length>0) { %>
+    <% for (var i = 0; i<threads.comments.length; i++) { %>
+    <div class="card">
+        <div class="card-header">
+            Comment # <%= i %>
+        </div>
+        <div class="card-body">
+            <h1><%= threads.comments[i].comment %></h1>
+            <input type="button" value="Edit" />
+            <input type="button" value="Delete" />
+        </div>
     </div>
+    <%} %>
+    <% } else { %>
+    No comments!
+    <% } %>
+    <br>
     <div class="form-group">
-        <textarea class="form-control" id="comment" name="comment" placeholder="Type your comment here" rows="3" required></textarea>
-        <input type="submit" value="Comment" class="btn btn-success"/>
+        <textarea class="form-control" id="comment" name="comment" placeholder="Type your comment here" rows="3"
+            required></textarea>
+        <input type="submit" value="Comment" class="btn btn-success float-right" />
+    </div>
 
-    </div>
-    
 </form>
 
 <% include footer %>

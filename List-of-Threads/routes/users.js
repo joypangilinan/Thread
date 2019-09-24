@@ -7,9 +7,9 @@ var authenticate = require('../authenticate')
 
 const User = require('../models/user')
 const Thread = require('../models/thread')
-const Comment = require('../models/comment')
 router.use(bodyParser.json())
 var token
+var id
 /* GET users listing. */
 
 
@@ -41,17 +41,13 @@ router.get('/login', function (req, res, next) {
 });
 
 router.post('/login', passport.authenticate('local'), (req, res) => {
-
-   token = authenticate.getToken({ _id: req.user._id })
+  id = req.user._id
+  token = authenticate.getToken({ _id: req.user._id })
   res.statusCode = 200
-<<<<<<< HEAD
-  res.setHeader('Authorization', 'bearer ' + token)
-
-=======
+  res.setHeader('Content-Type', 'application/json')
   res.setHeader('Authorization', 'Bearer ' + token)
->>>>>>> 1598b22528623f34509743b11048e13f11da9e0d
-  // res.json({ success: true, token: token, status: 'You are successfully login' })
-  console.log(token)
+  // // res.json({ success: true, token: token, status: 'You are successfully login' })
+  // console.log(token)
   res.redirect("/users/listthreads")
 })
 
@@ -67,7 +63,7 @@ router.get('/listthreads', function (req, res, next) {
 
 
 router.get('/listthreads/create', function (req, res, next) {
- 
+
   res.header('Authorization', 'Bearer ' + token)
   User.find({})
     .then((user) => {
@@ -79,9 +75,13 @@ router.get('/listthreads/create', function (req, res, next) {
   // res.render('createthread');
 });
 
-router.post('/listthreads/create', authenticate.verifyUser, (req, res, next) => {
-  console.log(req.user._id)
-  Thread.create(req.body, { author: req.user._id })
+router.post('/listthreads/create', (req, res, next) => {
+  console.log(id)
+  const post = new Thread({
+    ...req.body,
+    author: id
+  })
+  Thread.create(post)
     .then((thread) => {
       console.log('New thread added successfully ', thread)
       res.redirect("/users/listthreads")
@@ -93,7 +93,45 @@ router.post('/listthreads/create', authenticate.verifyUser, (req, res, next) => 
 
 
 router.get('/listthreads/view', function (req, res, next) {
-  res.render('viewthreads');
+  res.render('viewthreads', { threads: thread });
+});
+
+router.get('/listthreads/view/:threadId', function (req, res, next) {
+  Thread.findOne({ _id: req.params.threadId })
+    .then(thread => {
+      if (thread == null) {
+        err = new Error('Thread ' + req.params.threadId + ' not found')
+        err.status = 404
+        return next(err)
+      } else {
+        res.render('viewthreads', { threads: thread })
+      }
+    }, (err) => next(err))
+    .catch((err) => next(err))
+});
+
+router.post('/listthreads/view/:threadId', function (req, res, next) {
+  Thread.findById(req.params.threadId)
+    .then(thread => {
+      if (thread != null) {
+        req.body.author = id
+        thread.comments.push(req.body)
+        thread.save()
+          .then(dish => {
+            Thread.findById(thread._id)
+              .populate('comments.author')
+              .then((thread) => {
+                res.render('viewthreads', { threads: thread })
+              })
+          }, err => next(err))
+      }
+      else {
+        err = new Error('Dish ' + req.params.threadId + ' not found')
+        err.status = 404
+        return next(err)
+      }
+    }, (err) => next(err))
+    .catch((err) => next(err))
 });
 
 router.get('/logout', (req, res, next) => {

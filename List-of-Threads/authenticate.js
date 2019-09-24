@@ -20,6 +20,7 @@ var opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
 opts.secretOrKey = config.secretKey
 
+
 exports.jwtPassport = passport.use(new JwtStrategy(opts,
     (jwt_payload, done) => {
         console.log("JWT payload: ", jwt_payload)
@@ -34,4 +35,4 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
         })
     }))
 
-exports.verifyUser = passport.authenticate('jwt', { session: true })
+exports.verifyUser = passport.authenticate('jwt', { session: false })

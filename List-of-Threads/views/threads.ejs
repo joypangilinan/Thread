@@ -2,11 +2,24 @@
 
 <h1> Threads
     <a href="/users/listthreads/create" class="btn btn-primary pull-right">+ Create Thread</a>
-    <a href="/users/logout" class="btn btn-primary pull-right">Logout</a>
+    <a href="/users/logout" class="btn btn-primary float-right">Logout</a>
 </h1>
 <% if (threads.length>0) { %>
 <% for (var i = 0; i<threads.length; i++) { %>
-<%= threads[i].title %>
+<div class="card">
+    <div class="card-header">
+        <p><%= threads.username %></p>
+        <p class="float-right">
+            Created:
+            <%= threads[i].createdAt.getMonth()+"/"+threads[i].createdAt.getDate()+"/"+ threads[i].createdAt.getFullYear()%>
+        </p>
+    </div>
+    <div class="card-body">
+        <p class="card-text"><%= threads[i].title %></p>
+        <a href="/users/listthreads/view/<%= threads[i]._id %>" class=" btn btn-primary float-right">View</a>
+
+    </div>
+</div>
 <%} %>
 <% } else { %>
 No record found
