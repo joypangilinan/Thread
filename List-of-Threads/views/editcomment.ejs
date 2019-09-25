@@ -1,0 +1,10 @@
+<% include header %>
+<a href="/users/listthreads" class="btn btn-primary pull-right">Home</a>
+<h2>Update Comment</h2>
+<form method="post" role="form">
+    <div class="form-group">
+        <textarea class="form-control" id="comment" name="comment" rows="3" required><%= threads %></textarea>
+        <input type="submit" value="Comment" class="btn btn-success float-right" />
+    </div>
+</form>
+<% include footer %>

@@ -17,7 +17,14 @@ exports.getToken = function (user) {
 }
 
 var opts = {}
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
+var cookieExtractor = function (req) {
+    var token = null;
+    if (req && req.cookies) {
+        token = req.cookies['token'];
+    }
+    return token;
+};
+opts.jwtFromRequest = cookieExtractor
 opts.secretOrKey = config.secretKey
 
 

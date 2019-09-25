@@ -2,43 +2,67 @@
 
 <h1>A Thread
     <a href="/users/listthreads" class="btn btn-primary">All Threads</a>
-</h1>
-
-<form method="post" role="form">
+</h1><br>
+<div class="container-view-thread">
     <div class="card">
         <div class="card-header">
-            Featured
+            Name: <%= threads.author.username %>
         </div>
         <div class="card-body">
             <h1><%= threads.title %></h1>
-            <input type="button" value="Edit" />
-            <input type="button" value="Delete" />
+            <% if (JSON.stringify(ids) == JSON.stringify(threads.author._id)) { %>
+            <a href="/users/edit/<%= threads._id %>" class=" btn btn-primary">Edit</a>
+            <a href="/users/delete/<%= threads._id %>"
+                onclick="return confirm('Are you sure you want to delete your thread?')"
+                class=" btn btn-primary ">Delete</a>
+            <% } %>
+
         </div>
     </div><br>
-    <h1>Comments</h1>
+    <h3>Comments</h3>
     <% if (threads.comments.length>0) { %>
     <% for (var i = 0; i<threads.comments.length; i++) { %>
     <div class="card">
         <div class="card-header">
-            Comment # <%= i %>
+            <p class="float-right text-muted">
+                <small>Created:
+                    <%= threads.comments[i].createdAt.getMonth()+"/"+threads.comments[i].createdAt.getDate()+"/"+threads.comments[i].createdAt.getFullYear()%>
+                </small>
+            </p>
+            <p>Name: <%= threads.comments[i].author.username %></p>
         </div>
         <div class="card-body">
+            <% if (JSON.stringify(ids) == JSON.stringify(threads.comments[i].author._id)) { %>
             <h1><%= threads.comments[i].comment %></h1>
-            <input type="button" value="Edit" />
-            <input type="button" value="Delete" />
+            <a href="/users/edit/<%= threads._id %>/comments/<%= threads.comments[i]._id %>"
+                class=" btn btn-primary">Edit</a>
+            <a href="/users/delete/<%= threads._id %>/comments/<%= threads.comments[i].id %>"
+                onclick="return confirm('Are you sure you want to delete your comment?')"
+                class=" btn btn-primary ">Delete</a>
+            <% } else {%>
+            <h1><%= threads.comments[i].comment %></h1>
+            <% } %>
+
         </div>
     </div>
+    <br>
     <%} %>
     <% } else { %>
-    No comments!
-    <% } %>
-    <br>
-    <div class="form-group">
-        <textarea class="form-control" id="comment" name="comment" placeholder="Type your comment here" rows="3"
-            required></textarea>
-        <input type="submit" value="Comment" class="btn btn-success float-right" />
+    <div class="alert alert-primary" role="alert">
+        No comments!
     </div>
+    <% } %>
 
-</form>
 
+    <br>
+    <form method="post" role="form">
+        <div class="form-group">
+            <textarea class="form-control" id="comment" name="comment" placeholder="Type your comment here" rows="3"
+                required></textarea>
+            <br>
+            <input type="submit" value="Comment" class="btn btn-success float-right" />
+        </div>
+    </form>
+</div>
+<br><br>
 <% include footer %>
