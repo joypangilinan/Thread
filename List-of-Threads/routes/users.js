@@ -4,7 +4,7 @@ var bodyParser = require('body-parser')
 var passport = require('passport')
 var authenticate = require('../authenticate')
 const multer = require('multer')
-
+var fs = require('fs');
 
 const User = require('../models/user')
 const Thread = require('../models/thread')
@@ -27,6 +27,9 @@ const imageFileFilter = (req, file, cb) => {
   cb(null, true)
 }
 
+//image path
+var imgPath = 'public/images'
+
 const upload = multer({ storage: storage, fileFilter: imageFileFilter })
 var uploads = upload.single('imageFile')
 
@@ -38,17 +41,13 @@ router.post('/register', function (req, res, next) {
   User.register(new User({ username: req.body.username }),
     req.body.password, (err, user) => {
       if (err) {
-        res.statusCode = 500
-        res.setHeader('Content-Type', 'application/json')
-        res.json({ err: err })
+        err = new Error('A user with the given username is already registered')
+        return next(err)
       }
       else {
         passport.authenticate('local')(req, res, () => {
           console.log('Registration Successful')
           res.redirect("/users/login")
-          // res.statusCode = 200
-          // res.setHeader('Content-Type', 'application/json')
-          // res.json({ success: true, status: 'Registration Successful' })
         })
       }
     })
@@ -94,11 +93,21 @@ router.post('/listthreads/create', authenticate.verifyUser, (req, res, next) => 
       res.json('Maximum of 1 upload only')
       return
     } else {
-      const post = new Thread({
-        ...req.body,
-        author: id
-      })
-      Thread.create(post)
+      var imageFile = req.file.originalname
+      if (req.file != undefined) {
+        var imageDetails = new Thread({
+          ...req.body,
+          img: imageFile,
+          author: req.user._id
+        })
+      } else {
+        var imageDetails = new Thread({
+          ...req.body,
+          author: req.user._id
+        })
+      }
+
+      Thread.create(imageDetails)
         .then((thread) => {
           console.log('New thread added successfully ', thread)
           res.redirect("/users/listthreads")
@@ -172,25 +181,31 @@ router.get('/edit/:threadId', authenticate.verifyUser, (req, res, next) => {
 })
 
 router.post('/edit/:threadId', authenticate.verifyUser, (req, res, next) => {
-  Thread.findOneAndUpdate({ _id: req.params.threadId }, {
-    $set: req.body
+  Thread.findByIdAndUpdate(req.params.threadId, {
+    $set: req.body,
   }, { new: true })
     .then(thread => {
+      console.log(thread)
       res.redirect("/users/listthreads/view/" + req.params.threadId)
     }, (err) => next(err))
     .catch((err) => next(err))
 })
 
 router.get('/delete/:threadId', authenticate.verifyUser, (req, res, next) => {
-  Thread.findOneAndRemove(req.params.threadId)
+  Thread.findById(req.params.threadId)
     .then(resp => {
       if (resp == null) {
         err = new Error('Thread ' + req.params.threadId + ' not found')
         err.status = 404
         return next(err)
       } else {
-        console.log("successfully deleted!")
-        res.redirect("/users/listthreads")
+        resp.remove()
+        resp.save()
+          .then(thread => {
+            console.log("successfully deleted!")
+            res.redirect("/users/listthreads")
+          }, err => next(err))
+
       }
     }, (err) => next(err))
     .catch((err) => next(err))

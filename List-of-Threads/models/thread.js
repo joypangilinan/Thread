@@ -24,10 +24,7 @@ var ThreadSchema = new Schema({
         type: String,
         required: true
     },
-    img: {
-        data: Buffer,
-        contentType: String
-    },
+    img: String,
     author: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,

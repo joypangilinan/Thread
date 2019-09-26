@@ -3,26 +3,32 @@
 <h1>A Thread
     <a href="/users/listthreads" class="btn btn-primary">All Threads</a>
 </h1><br>
-<div class="container-view-thread">
-    <div class="card">
+<div class="threadContainer ">
+    <div class="card thread">
         <div class="card-header">
             Name: <%= threads.author.username %>
         </div>
         <div class="card-body">
-            <h1><%= threads.title %></h1>
+            <div class="card-text">
+                <p><%= threads.title %></p>
+            </div>
+            <% if (threads.img) {%>
+            <img src="/images/<%= threads.img %>" width='100%'>
+            <%} %>
             <% if (JSON.stringify(ids) == JSON.stringify(threads.author._id)) { %>
+        </div>
+        <div class="card-footer">
             <a href="/users/edit/<%= threads._id %>" class=" btn btn-primary">Edit</a>
             <a href="/users/delete/<%= threads._id %>"
                 onclick="return confirm('Are you sure you want to delete your thread?')"
                 class=" btn btn-primary ">Delete</a>
             <% } %>
-
         </div>
     </div><br>
     <h3>Comments</h3>
     <% if (threads.comments.length>0) { %>
     <% for (var i = 0; i<threads.comments.length; i++) { %>
-    <div class="card">
+    <div class="card thread">
         <div class="card-header">
             <p class="float-right text-muted">
                 <small>Created:
@@ -33,7 +39,7 @@
         </div>
         <div class="card-body">
             <% if (JSON.stringify(ids) == JSON.stringify(threads.comments[i].author._id)) { %>
-            <h1><%= threads.comments[i].comment %></h1>
+            <p><%= threads.comments[i].comment %></p>
             <a href="/users/edit/<%= threads._id %>/comments/<%= threads.comments[i]._id %>"
                 class=" btn btn-primary">Edit</a>
             <a href="/users/delete/<%= threads._id %>/comments/<%= threads.comments[i].id %>"
@@ -45,6 +51,7 @@
 
         </div>
     </div>
+
     <br>
     <%} %>
     <% } else { %>
@@ -53,10 +60,9 @@
     </div>
     <% } %>
 
-
     <br>
     <form method="post" role="form">
-        <div class="form-group">
+        <div class="form-group thread">
             <textarea class="form-control" id="comment" name="comment" placeholder="Type your comment here" rows="3"
                 required></textarea>
             <br>

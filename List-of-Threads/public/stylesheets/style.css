@@ -1,5 +1,4 @@
 body {
-  padding-left: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -7,11 +6,32 @@ a {
   color: #00B7FF;
 }
 .container-login-register {
+  background-color: rgb(238, 238, 238);
   border-color: black;
-  padding: 15em;
+  padding: 7em;
+  margin-top: 20%;
+  width: 80%;
+  border-radius: 2em;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .container-view-thread {
   padding-left: 10em;
   padding-right: 10em
 }
+
+.thread{
+  width: 40em;
+}
+
+.threadContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center
+}
+
+.container-comment{
+  background-color: rgb(238, 238, 238);
+}
+

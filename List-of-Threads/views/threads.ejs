@@ -4,10 +4,10 @@
 <a href="/users/listthreads/create" class="btn btn-primary float-left">+ Create Thread</a>
 <a href="/users/logout" class="btn btn-primary float-right">Logout</a>
 <br><br><br>
-<div class="container">
+<div class="container threadContainer">
     <% if (threads.length>0) { %>
     <% for (var i = 0; i<threads.length; i++) { %>
-    <div class="card">
+    <div class="card thread">
         <div class="card-header">
             <p class="float-right text-muted">
                 <small>Created:
@@ -17,11 +17,18 @@
             Name: <%= threads[i].author.username %>
         </div>
         <div class="card-body">
-            <p class="card-text"><%= threads[i].title %></p>
+            <div class="card-text">
+                <p><%= threads[i].title %></p>
+            </div>
+            <% if (threads[i].img) {%>
+            <img class="img-thumbnail" src="/images/<%= threads[i].img %>">
+            <%} %>
+        </div>
+        <div class="card-footer">
             <a href="/users/listthreads/view/<%= threads[i]._id %>" class=" btn btn-primary float-right">View</a>
-
         </div>
     </div>
+    <br>
     <%} %>
     <% } else { %>
     <div class="alert alert-primary" role="alert">

@@ -15,10 +15,5 @@ var User = new Schema({
 
 })
 
-User.virtual('listthreads', {
-    ref: 'Thread',
-    localField: '_id',
-    foreignField: 'author'
-})
 User.plugin(passportLocalMongoose)
 module.exports = mongoose.model('User', User)
