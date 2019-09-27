@@ -4,15 +4,6 @@ var passportLocalMongoose = require('passport-local-mongoose')
 const Thread = require('./thread')
 
 var User = new Schema({
-    admin: {
-        type: Boolean,
-        default: false
-    },
-    threads: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Thread'
-    }]
-
 })
 
 User.plugin(passportLocalMongoose)

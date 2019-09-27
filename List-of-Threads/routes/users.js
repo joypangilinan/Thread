@@ -93,8 +93,8 @@ router.post('/listthreads/create', authenticate.verifyUser, (req, res, next) => 
       res.json('Maximum of 1 upload only')
       return
     } else {
-      var imageFile = req.file.originalname
       if (req.file != undefined) {
+        var imageFile = req.file.filename
         var imageDetails = new Thread({
           ...req.body,
           img: imageFile,
